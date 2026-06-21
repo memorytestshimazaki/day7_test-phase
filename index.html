@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>単語再認テスト</title>
+
+  <!-- jsPsych -->
+  <script src="https://unpkg.com/jspsych@7.3.4"></script>
+  
+<script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.3"></script>
+  <!-- ボタン回答プラグイン -->
+  <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
+<script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
+  <style>
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: white;
+    }
+
+    /* 画面中央配置 */
+
+    .jspsych-display-element {
+      display: flex !important;
+      justify-content: center !important;
+      align-items: center !important;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .center-text {
+      width: 100%;
+      text-align: center;
+      font-family: sans-serif;
+    }
+
+  </style>
+
+</head>
+
+<body></body>
+
+<script>
+
+/* ========================================
+   GASのURL
+======================================== */
+
+/* ↓ここを自分のURLに変更 */
+
+const GAS_URL =
+  "https://script.google.com/macros/s/AKfycbykXLPo7yOkRlGzwbBA8leKtM4_Qqq_wF9uLB9GwVDpDaYfkJb47is2StaHIp-OLpiR/exec"
+/* ========================================
+   jsPsych 初期化
+======================================== */
+
+const jsPsych = initJsPsych();
+
+const DAY = 7;
+
+let timeline = [];
+let participant_id = "";
+
+timeline.push({
+
+  type: jsPsychSurveyText,
+
+  questions: [
+
+    {
+      prompt: "ユーザーID（半角数字4桁）を入力してください",
+      required: true
+    }
+
+  ],
+
+  button_label: "次へ",
+
+  on_finish: function(data){
+
+    participant_id =
+      data.response.Q0;
+
+  }
+
+});
+
+/* ========================================
+   教示画面
+======================================== */
+
+timeline.push({
+
+  type: jsPsychHtmlButtonResponse,
+
+  stimulus: `
+    <div class="center-text"
+         style="font-size:25px; line-height:1.8;">
+      これから単語が表示されます。<br>
+      各単語について、<br>
+      「見た」または「見てない」を選択してください。
+    </div>
+  `,
+
+  choices: ['開始する']
+
+});
+
+/* ========================================
+   テスト単語
+======================================== */
+
+let test_words = [
+
+{item_id:181, word:"人質", old_new:"old", correct_answer:0, valence:2.5, arousal:3.8, emotion:"negative"},
+{item_id:182, word:"毒薬", old_new:"old", correct_answer:0, valence:1.7, arousal:5.4, emotion:"negative"},
+{item_id:183, word:"火事", old_new:"old", correct_answer:0, valence:2.3, arousal:5.7, emotion:"negative"},
+{item_id:184, word:"憂鬱", old_new:"old", correct_answer:0, valence:1.9, arousal:3.2, emotion:"negative"},
+{item_id:185, word:"過失", old_new:"old", correct_answer:0, valence:2.7, arousal:4.9, emotion:"negative"},
+{item_id:186, word:"慣習", old_new:"old", correct_answer:0, valence:5.1, arousal:3.2, emotion:"neutral"},
+{item_id:187, word:"浴槽", old_new:"old", correct_answer:0, valence:5.2, arousal:2.8, emotion:"neutral"},
+{item_id:188, word:"憂慮", old_new:"old", correct_answer:0, valence:3.5, arousal:2.5, emotion:"neutral"},
+{item_id:189, word:"金槌", old_new:"old", correct_answer:0, valence:4.7, arousal:4.3, emotion:"neutral"},
+{item_id:190, word:"風車", old_new:"old", correct_answer:0, valence:5.7, arousal:2.9, emotion:"neutral"},
+{item_id:191, word:"調和", old_new:"old", correct_answer:0, valence:6.1, arousal:3.1, emotion:"positive"},
+{item_id:192, word:"入浴", old_new:"old", correct_answer:0, valence:6.5, arousal:4.4, emotion:"positive"},
+{item_id:193, word:"天使", old_new:"old", correct_answer:0, valence:7.0, arousal:4.4, emotion:"positive"},
+{item_id:194, word:"名誉", old_new:"old", correct_answer:0, valence:6.7, arousal:5.2, emotion:"positive"},
+{item_id:195, word:"旋律", old_new:"old", correct_answer:0, valence:6.1, arousal:4.0, emotion:"positive"},
+
+{item_id:196, word:"悲惨", old_new:"new", correct_answer:1, valence:2.0, arousal:4.4, emotion:"negative"},
+{item_id:197, word:"冒涜", old_new:"new", correct_answer:1, valence:2.7, arousal:4.5, emotion:"negative"},
+{item_id:198, word:"却下", old_new:"new", correct_answer:1, valence:3.2, arousal:3.3, emotion:"negative"},
+{item_id:199, word:"有毒", old_new:"new", correct_answer:1, valence:1.8, arousal:4.7, emotion:"negative"},
+{item_id:200, word:"傷跡", old_new:"new", correct_answer:1, valence:2.6, arousal:4.0, emotion:"negative"},
+{item_id:201, word:"医者", old_new:"new", correct_answer:1, valence:5.4, arousal:3.9, emotion:"neutral"},
+{item_id:202, word:"文脈", old_new:"new", correct_answer:1, valence:5.0, arousal:2.0, emotion:"neutral"},
+{item_id:203, word:"素質", old_new:"new", correct_answer:1, valence:5.8, arousal:3.3, emotion:"neutral"},
+{item_id:204, word:"風味", old_new:"new", correct_answer:1, valence:5.6, arousal:2.7, emotion:"neutral"},
+{item_id:205, word:"色彩", old_new:"new", correct_answer:1, valence:5.9, arousal:3.4, emotion:"neutral"},
+{item_id:206, word:"促進", old_new:"new", correct_answer:1, valence:6.2, arousal:4.4, emotion:"positive"},
+{item_id:207, word:"熱望", old_new:"new", correct_answer:1, valence:6.1, arousal:5.7, emotion:"positive"},
+{item_id:208, word:"娯楽", old_new:"new", correct_answer:1, valence:7.4, arousal:5.7, emotion:"positive"},
+{item_id:209, word:"映画", old_new:"new", correct_answer:1, valence:6.7, arousal:5.1, emotion:"positive"},
+{item_id:210, word:"抱擁", old_new:"new", correct_answer:1, valence:6.7, arousal:4.8, emotion:"positive"}
+];
+
+/* ========================================
+   ランダム化
+======================================== */
+
+test_words =
+  jsPsych.randomization.shuffle(test_words);
+
+/* ========================================
+   テストフェーズ
+======================================== */
+
+test_words.forEach(function(item){
+
+  timeline.push({
+
+    type: jsPsychHtmlButtonResponse,
+
+    stimulus: `
+      <div class="center-text"
+           style="font-size:100px;">
+        ${item.word}
+      </div>
+    `,
+
+    choices: ['見た', '見てない'],
+    post_trial_gap: 300,
+
+    /* 保存データ */
+
+    data: {
+      item_id: item.item_id,
+      word: item.word,
+      old_new: item.old_new,
+      correct_answer: item.correct_answer,
+      valence: item.valence,
+      arousal: item.arousal,
+      emotion: item.emotion
+
+    },
+
+    /* 回答後処理 */
+
+    on_finish: function(data){
+
+      /* 正答判定 */
+
+      data.correct =
+        data.response == data.correct_answer;
+
+      /* ------------------------
+         Googleスプレッドシート送信
+      ------------------------ */
+
+fetch(GAS_URL, {
+  method: "POST",
+  mode: "no-cors",
+  keepalive: true,
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({  type: "recognition",
+    participant_id: participant_id,
+    day: DAY,
+    item_id: data.item_id,
+    word: data.word,
+    old_new: data.old_new,
+    valence: data.valence,
+    arousal: data.arousal,
+    emotion: data.emotion,
+    response: data.response,
+    correct_answer: data.correct_answer,
+    correct: data.correct,
+    rt: data.rt
+  })
+});
+
+    }
+
+  });
+
+});
+
+/* ========================================
+   終了画面
+======================================== */
+
+timeline.push({
+
+  type: jsPsychHtmlKeyboardResponse,
+
+  stimulus: `
+    <div class="center-text"
+         style="font-size:18px; line-height:1.8;">
+      ご協力ありがとうございました。<br><br>
+      <b>ブラウザの「戻る」操作を行い、<br>
+        前のアンケート画面に戻ってください。</b><br>
+      （戻るボタンやスワイプ操作など、<br>
+      お使いの端末の方法をご利用ください。）<br>  
+      ※ページを閉じたり、×ボタンを押したり<br>
+      しないでください。<br><br>
+      アンケート画面に戻りましたら、<br>
+      「次へ」を押して回答を続けてください。<br>
+    </div>
+  `,
+
+  choices: "NO_KEYS"
+
+});
+
+/* ========================================
+   実行
+======================================== */
+
+jsPsych.run(timeline);
+
+</script>
+
+</html>
